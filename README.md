@@ -135,6 +135,9 @@ Run the following on **each** of the 3 instances.
 ```sh
 ssh -i ~/.ssh/$KEY_NAME.pem ubuntu@<public-ip>
 ```
+ ssh -i K3-master-1.pem ubuntu@18.207.218.135
+ ssh -i K3s-master-2.pem ubuntu@98.93.149.194
+ ssh -i K3s-master-3.pem ubuntu@54.211.130.197
 
 ### 2.2 — Set the hostname (run separately on each node)
 
@@ -162,9 +165,9 @@ Add an entry for each node so they can resolve each other by hostname. Replace t
 
 ```sh
 sudo tee -a /etc/hosts <<EOF
-10.0.1.10  k3s-master-1
-10.0.1.11  k3s-master-2
-10.0.1.12  k3s-master-3
+172.31.43.59  k3s-master-1
+172.31.36.80  k3s-master-2
+172.31.33.116  k3s-master-3
 EOF
 ```
 
@@ -188,14 +191,14 @@ sudo mkdir -p /etc/rancher/k3s
 # Replace 10.0.1.10 with the private IP of k3s-master-1
 # Replace 1.2.3.4  with the public IP / Elastic IP of k3s-master-1
 sudo tee /etc/rancher/k3s/config.yaml <<EOF
-server: https://172.31.84.57:6443
+server: https://172.31.43.59:6443
 token: K105aae9ad626ed278c1b1a535c271f613ba786c225959e4ed8bd7637540ea89ac9::server:186389f387221ef771275e3cab55000f
-node-ip: 172.31.95.232
+node-ip: 172.31.36.80
 advertise-address: 172.31.95.232
 tls-san:
-  - 172.31.95.232
-  - 44.202.148.49
-  - k3s-master-3
+  - 172.31.36.80
+  - 54.198.77.240
+  - k3s-master-2
 disable: [servicelb, traefik]
 EOF
 ```
@@ -239,14 +242,14 @@ sudo mkdir -p /etc/rancher/k3s
 
 # Example for k3s-master-2. Replace IPs and token with your values.
 sudo tee /etc/rancher/k3s/config.yaml <<EOF
-server: https://10.0.1.10:6443
-token: <token-from-master-1>
-node-ip: 10.0.1.11
+server: https://172.31.43.59:6443
+token: K105aae9ad626ed278c1b1a535c271f613ba786c225959e4ed8bd7637540ea89ac9::server:186389f387221ef771275e3cab55000f
+node-ip: 172.31.33.116 
 advertise-address: 10.0.1.11
 tls-san:
-  - 10.0.1.11
-  - 1.2.3.5
-  - k3s-master-2
+  - 172.31.33.116 
+  - 54.237.205.226
+  - k3s-master-3
 disable: [servicelb, traefik]
 EOF
 ```
