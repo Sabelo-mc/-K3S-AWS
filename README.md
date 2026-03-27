@@ -120,9 +120,9 @@ Record the values — you will need them throughout this guide:
 
 | Hostname | Private IP | Public IP |
 |----------|------------|-----------|
-| k3s-master-1 | 10.0.x.x | 1.2.3.4 |
-| k3s-master-2 | 10.0.x.x | 1.2.3.5 |
-| k3s-master-3 | 10.0.x.x | 1.2.3.6 |
+| k3s-master-1 | 172.31.84.57 | 18.207.218.135 |
+| k3s-master-2 | 172.31.88.133 | 98.93.149.194 |
+| k3s-master-3 | 172.31.95.232 | 54.211.130.197 |
 
 ---
 
@@ -137,6 +137,9 @@ ssh -i ~/.ssh/$KEY_NAME.pem ubuntu@<public-ip>
 ```
 
 ### 2.2 — Set the hostname (run separately on each node)
+ssh -i K3-master-1.pem ubuntu@18.207.218.135
+ssh -i K3s-master-2.pem ubuntu@98.93.149.194
+ssh -i K3s-master-3.pem ubuntu@54.211.130.197
 
 ```sh
 # On k3s-master-1
@@ -162,9 +165,9 @@ Add an entry for each node so they can resolve each other by hostname. Replace t
 
 ```sh
 sudo tee -a /etc/hosts <<EOF
-10.0.1.10  k3s-master-1
-10.0.1.11  k3s-master-2
-10.0.1.12  k3s-master-3
+172.31.84.57  k3s-master-1
+172.31.88.133 k3s-master-2
+172.31.95.232 k3s-master-3
 EOF
 ```
 
@@ -189,11 +192,11 @@ sudo mkdir -p /etc/rancher/k3s
 # Replace 1.2.3.4  with the public IP / Elastic IP of k3s-master-1
 sudo tee /etc/rancher/k3s/config.yaml <<EOF
 cluster-init: true
-node-ip: 10.0.1.10
-advertise-address: 10.0.1.10
+node-ip: 172.31.84.57
+advertise-address: 172.31.84.57
 tls-san:
-  - 10.0.1.10
-  - 1.2.3.4
+  - 172.31.84.57
+  - 18.207.218.135
   - k3s-master-1
 disable: [servicelb, traefik]
 EOF
@@ -238,12 +241,12 @@ sudo mkdir -p /etc/rancher/k3s
 
 # Example for k3s-master-2. Replace IPs and token with your values.
 sudo tee /etc/rancher/k3s/config.yaml <<EOF
-server: https://10.0.1.10:6443
-token: <token-from-master-1>
-node-ip: 10.0.1.11
-advertise-address: 10.0.1.11
+server: https://172.31.84.57:6443
+token: K105aae9ad626ed278c1b1a535c271f613ba786c225959e4ed8bd7637540ea89ac9::server:186389f387221ef771275e3cab55000f
+node-ip: 172.31.88.133
+advertise-address: 172.31.88.133
 tls-san:
-  - 10.0.1.11
+  - 172.31.88.133
   - 1.2.3.5
   - k3s-master-2
 disable: [servicelb, traefik]
